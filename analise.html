@@ -178,7 +178,7 @@
               <span>Desempenho por capacidade</span>
             </h2>
           </div>
-          <div style="position:relative; height:260px;">
+          <div id="ap-capChartWrap" style="position:relative; height:260px;">
             <canvas id="ap-capChart"></canvas>
           </div>
         </div>
@@ -2083,12 +2083,21 @@ function renderCapacityChart(classroomAnalysis) {
 
     const { sortedCapacityCodes, performanceByCapacity } = classroomAnalysis;
 
-    const labels = sortedCapacityCodes.map(code => getCapacityDisplayName(code));
+    // Labels com código + nome abreviado para legibilidade
+    const labels = sortedCapacityCodes.map(code => {
+        const name = getCapacityDisplayName(code);
+        return `${code}  ·  ${name}`;
+    });
     const values = sortedCapacityCodes.map(code => {
         const m = performanceByCapacity[code];
         return m && m.total > 0 ? Number(((m.acertos / m.total) * 100).toFixed(1)) : 0;
     });
     const colors = values.map(v => getPerformanceColor(v));
+
+    // Altura dinâmica: 52px por barra + 40px de padding
+    const dynamicHeight = Math.max(260, sortedCapacityCodes.length * 52 + 40);
+    const wrap = getElementByIdOrNull('ap-capChartWrap');
+    if (wrap) wrap.style.height = dynamicHeight + 'px';
 
     if (analyseCapChart) analyseCapChart.destroy();
     analyseCapChart = new Chart(canvas.getContext('2d'), {
@@ -2099,18 +2108,65 @@ function renderCapacityChart(classroomAnalysis) {
                 label: 'Desempenho (%)',
                 data: values,
                 backgroundColor: colors,
-                borderRadius: 6
+                borderRadius: 6,
+                borderSkipped: false
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             indexAxis: 'y',
-            plugins: { legend: { display: false } },
+            layout: { padding: { right: 48 } },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ` ${ctx.raw}% de acertos`
+                    }
+                },
+                // Valor % no final de cada barra
+                datalabels: false
+            },
             scales: {
                 x: {
                     min: 0, max: 100,
-                    ticks: { callback: v => `${v}%` }
+                    grid: { color: 'rgba(255,255,255,0.06)' },
+                    ticks: {
+                        callback: v => `${v}%`,
+                        font: { size: 11 },
+                        color: '#64748b'
+                    },
+                    border: { display: false }
+                },
+                y: {
+                    grid: { display: false },
+                    ticks: {
+                        font: { size: 12, weight: '500' },
+                        color: '#94a3b8'
+                    }
+                }
+            },
+            // Plugin inline para desenhar o valor % após cada barra
+            animation: {
+                onComplete: function() {
+                    const chart = this;
+                    const ctx = chart.ctx;
+                    ctx.save();
+                    ctx.font = 'bold 12px DM Sans, sans-serif';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    chart.data.datasets.forEach((dataset, di) => {
+                        const meta = chart.getDatasetMeta(di);
+                        meta.data.forEach((bar, i) => {
+                            const val = dataset.data[i];
+                            const color = dataset.backgroundColor[i] || '#94a3b8';
+                            ctx.fillStyle = color;
+                            const x = bar.x + 6;
+                            const y = bar.y;
+                            ctx.fillText(val + '%', x, y);
+                        });
+                    });
+                    ctx.restore();
                 }
             }
         }
@@ -2382,10 +2438,15 @@ function renderItemsTable(items) {
         return;
     }
 
-    // Filtros de capacidade
+    // Filtros de capacidade e conhecimento
     const caps = [...new Set(items.map(i => i.cap).filter(Boolean))].sort();
     const filterOptions = caps.map(c =>
         `<option value="${c}">${c} — ${getCapacityDisplayName(c)}</option>`
+    ).join('');
+
+    const knows = [...new Set(items.map(i => i.conhecimento).filter(k => k && k !== '—'))].sort((a,b) => a.localeCompare(b, 'pt-BR'));
+    const knowOptions = knows.map(k =>
+        `<option value="${k}">${k}</option>`
     ).join('');
 
     container.innerHTML = `
@@ -2394,6 +2455,11 @@ function renderItemsTable(items) {
                 onchange="filterItemsTable()">
                 <option value="">Todas as capacidades</option>
                 ${filterOptions}
+            </select>
+            <select id="ap-itemFilterKnow" class="student-select" style="height:38px; width:auto; min-width:220px; font-size:0.85rem;"
+                onchange="filterItemsTable()">
+                <option value="">Todos os conhecimentos</option>
+                ${knowOptions}
             </select>
             <span id="ap-itemCount" style="font-size:0.82rem; color:#64748b; font-weight:600;"></span>
         </div>
@@ -2421,8 +2487,12 @@ function renderItemsTable(items) {
 }
 
 function filterItemsTable() {
-    const filter = (getElementByIdOrNull('ap-itemFilter') || {}).value || '';
-    const items = (window._allItems || []).filter(i => !filter || i.cap === filter);
+    const filter      = (getElementByIdOrNull('ap-itemFilter')      || {}).value || '';
+    const filterKnow  = (getElementByIdOrNull('ap-itemFilterKnow')  || {}).value || '';
+    const items = (window._allItems || []).filter(i =>
+        (!filter     || i.cap         === filter) &&
+        (!filterKnow || i.conhecimento === filterKnow)
+    );
     const tbody = getElementByIdOrNull('ap-itemsBody');
     const count = getElementByIdOrNull('ap-itemCount');
 
