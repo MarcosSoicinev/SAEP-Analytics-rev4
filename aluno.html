@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAEP Analytics - Boletim do Aluno</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css?v=1777292953">
+
+    <style>
+      /* boletim só aparece na impressão */
+      .sv-print-only { display: none; }
+      @media print { .sv-print-only { display: block !important; } }
+    </style>
+</head>
+<body class="saep-body">
+
+  <nav class="saep-navbar no-print">
+    <div class="saep-container nav-inner">
+      <div class="nav-left">
+        <div class="brand-wrap">
+          <div class="brand-icon">
+            <i class="fa-solid fa-chart-column"></i>
+          </div>
+          <div class="brand-text">
+            <span class="brand-main">SAEP</span><span class="brand-accent">Analytics</span>
+          </div>
+        </div>
+
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">
+            <i class="fa-solid fa-users"></i>
+            <span>Visão da Turma</span>
+          </a>
+          <a href="aluno.html" class="nav-link active">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Boletim do Aluno</span>
+          </a>
+          <a href="analise.html" class="nav-link">
+            <i class="fa-solid fa-microscope"></i>
+            <span>Análise Profunda</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-right" style="display:flex; align-items:center; gap:12px;">
+
+        <!-- Indicador de curso detectado automaticamente -->
+        <div id="courseIndicator" class="course-indicator" style="display:none;">
+          <i class="fa-solid fa-graduation-cap" style="color:#4f46e5; font-size:0.85rem;"></i>
+          <span id="courseIndicatorName" style="font-size:0.88rem; font-weight:700;"></span>
+        </div>
+
+        <!-- Seletor oculto (mantido para compatibilidade com o JS existente) -->
+        <select id="courseSelector" class="student-select" style="display:none;"></select>
+
+        <label for="uploadConfig" class="upload-btn" title="Importar configuração anual de cursos">
+          <i class="fa-solid fa-gear text-violet-600"></i>
+          <span>Atualizar Config</span>
+        </label>
+        <input type="file" id="uploadConfig" accept=".xlsx" class="hidden">
+
+        <label for="uploadPlanilha" class="upload-btn">
+          <i class="fa-solid fa-file-excel text-emerald-600"></i>
+          <span>Importar Planilha</span>
+        </label>
+        <input type="file" id="uploadPlanilha" accept=".xlsx" class="hidden">
+      </div>
+    </div>
+  </nav>
+
+  <main class="saep-container page-space">
+    <section class="page-header student-top no-print">
+      <div>
+        <h1 class="page-title">Boletim do Aluno</h1>
+        <p class="page-subtitle">Selecione um estudante para visualizar o relatório detalhado.</p>
+      </div>
+    </section>
+
+    <!-- Selector oculto mantido para compatibilidade com student-ui.js -->
+    <div style="display:none;">
+      <select id="studentSelector" class="student-select">
+        <option value="">Faça o upload da planilha primeiro...</option>
+      </select>
+    </div>
+
+    <section class="saep-card section-card mb-6 no-print">
+      <div class="flex flex-col md:flex-row gap-3">
+        <button id="btnPdfAluno" class="upload-btn">
+          <i class="fa-solid fa-file-pdf text-red-600"></i>
+          <span>Gerar PDF do Aluno</span>
+        </button>
+
+        <button id="btnPdfTurma" class="upload-btn">
+          <i class="fa-solid fa-file-arrow-down text-indigo-600"></i>
+          <span>Gerar PDF da Turma</span>
+        </button>
+
+        <button id="btnPrintBoletim" class="upload-btn">
+          <i class="fa-solid fa-print text-slate-700"></i>
+          <span>Imprimir Boletim SENAI</span>
+        </button>
+      </div>
+    </section>
+
+    <div id="boletimPrintArea" class="sv-print-only">
+      <section id="studentHeader" class="saep-card student-header">
+        <div class="student-avatar" id="initialsBox">
+          <span id="initials">--</span>
+        </div>
+
+        <div class="student-main">
+          <h2 id="studentName" class="student-name">Nenhum Aluno Selecionado</h2>
+
+          <div class="student-meta">
+            <span class="meta-badge">
+              <i class="fa-solid fa-id-card"></i>
+              Matrícula: <b id="regNumber">--</b>
+            </span>
+
+            <span class="meta-badge">
+              <i class="fa-solid fa-signal"></i>
+              Nível SAEP: <b id="statusLabel">--</b>
+            </span>
+          </div>
+        </div>
+
+        <div class="student-score-box">
+          <p class="score-label">Desempenho</p>
+          <p id="totalScore" class="score-value">0%</p>
+        </div>
+      </section>
+
+      <section class="student-kpi-grid">
+        <div class="saep-card mini-kpi-card">
+          <p class="kpi-label">Acertos</p>
+          <p id="hits" class="mini-kpi-value">0</p>
+        </div>
+
+        <div class="saep-card mini-kpi-card">
+          <p class="kpi-label">Erros</p>
+          <p id="misses" class="mini-kpi-value">0</p>
+        </div>
+
+        <div class="saep-card mini-kpi-card">
+          <p class="kpi-label">Tempo</p>
+          <p id="time" class="mini-kpi-value">--</p>
+        </div>
+
+        <div class="saep-card mini-kpi-card">
+          <p class="kpi-label">Proficiência</p>
+          <p id="studentProficiency" class="mini-kpi-value">--</p>
+        </div>
+      </section>
+
+      <!-- Elementos ocultos mantidos para compatibilidade com student-ui.js -->
+      <div style="display:none;">
+        <canvas id="studentCapChart"></canvas>
+        <canvas id="studentKnowledgeChart"></canvas>
+        <div id="diagnosticBox">
+          <div id="diagnosticText"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="js/state.js?v=1777292953"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/utils.js?v=1777292953"></script>
+  <script src="js/storage-service.js?v=1777292953"></script>
+  <script src="js/spreadsheet-service.js?v=1777292953"></script>
+  <script src="js/saep-service.js?v=1777292953"></script>
+  <script src="js/chart-ui.js?v=1777292953"></script>
+  <script src="js/dashboard-ui.js?v=1777292953"></script>
+  <script src="js/student-ui.js?v=1777292953"></script>
+  <script src="js/pdf-service.js"></script>
+  <script src="js/theme-switcher.js?v=1777292953"></script>
+  <script src="js/boletim-print.js?v=1777292953"></script>
+  <script src="js/student-viewer.js?v=1777292953"></script>
+  <script src="js/upload-controller.js?v=1777292953"></script>
+  <script src="js/app.js?v=1777292953"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Limpando cache...</title>
+  <style>
+    body { font-family: Inter, sans-serif; background: #0f172a; color: #f1f5f9;
+           display: flex; flex-direction: column; align-items: center;
+           justify-content: center; height: 100vh; margin: 0; gap: 16px; }
+    .msg { font-size: 1.2rem; font-weight: 700; }
+    .sub { color: #94a3b8; font-size: 0.9rem; }
+    .spinner { width: 40px; height: 40px; border: 4px solid #334155;
+               border-top-color: #818cf8; border-radius: 50%;
+               animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="spinner"></div>
+  <div class="msg">Limpando cache do navegador...</div>
+  <div class="sub" id="status">Aguarde...</div>
+  <script>
+    async function clearAll() {
+      const status = document.getElementById('status');
+      try {
+        // Limpa todos os caches do service worker
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+          status.textContent = `${keys.length} cache(s) removido(s). Redirecionando...`;
+        } else {
+          status.textContent = 'Cache limpo. Redirecionando...';
+        }
+        // Limpa localStorage de dados antigos (mantém tema e curso)
+        const tema = localStorage.getItem('saep-theme');
+        const curso = localStorage.getItem('saep_curso');
+        const config = localStorage.getItem('saep_course_config');
+        localStorage.clear();
+        if (tema)   localStorage.setItem('saep-theme', tema);
+        if (curso)  localStorage.setItem('saep_curso', curso);
+        if (config) localStorage.setItem('saep_course_config', config);
+      } catch(e) {
+        status.textContent = 'Pronto. Redirecionando...';
+      }
+      // Redireciona para o index forçando reload sem cache
+      setTimeout(() => {
+        window.location.replace('index.html?nocache=' + Date.now());
+      }, 1500);
+    }
+    clearAll();
+  </script>
+</body>
+</html>

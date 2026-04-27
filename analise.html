@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAEP Analytics - Análise Profunda</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css?v=1777292953">
+</head>
+<body class="saep-body">
+
+  <nav class="saep-navbar">
+    <div class="saep-container nav-inner">
+      <div class="nav-left">
+        <div class="brand-wrap">
+          <div class="brand-icon">
+            <i class="fa-solid fa-chart-column"></i>
+          </div>
+          <div class="brand-text">
+            <span class="brand-main">SAEP</span><span class="brand-accent">Analytics</span>
+          </div>
+        </div>
+
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">
+            <i class="fa-solid fa-users"></i>
+            <span>Visão da Turma</span>
+          </a>
+          <a href="aluno.html" class="nav-link">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Boletim do Aluno</span>
+          </a>
+          <a href="analise.html" class="nav-link active">
+            <i class="fa-solid fa-microscope"></i>
+            <span>Análise Profunda</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-right" style="display:flex; align-items:center; gap:12px;">
+
+        <div id="courseIndicator" class="course-indicator" style="display:none;">
+          <i class="fa-solid fa-graduation-cap" style="color:#4f46e5; font-size:0.85rem;"></i>
+          <span id="courseIndicatorName" style="font-size:0.88rem; font-weight:700;"></span>
+        </div>
+
+        <select id="courseSelector" class="student-select" style="display:none;"></select>
+
+        <label for="uploadConfig" class="upload-btn" title="Importar configuração anual de cursos">
+          <i class="fa-solid fa-gear text-violet-600"></i>
+          <span>Atualizar Config</span>
+        </label>
+        <input type="file" id="uploadConfig" accept=".xlsx" class="hidden">
+
+        <label for="uploadPlanilha" class="upload-btn">
+          <i class="fa-solid fa-file-excel text-emerald-600"></i>
+          <span>Importar Planilha</span>
+        </label>
+        <input type="file" id="uploadPlanilha" accept=".xlsx" class="hidden">
+      </div>
+    </div>
+  </nav>
+
+  <main class="saep-container page-space">
+
+    <section class="page-header">
+      <div>
+        <h1 class="page-title">Análise Profunda</h1>
+        <p id="analyseSubtitle" class="page-subtitle">Faça o upload da planilha para visualizar a análise completa da turma.</p>
+      </div>
+    </section>
+
+    <!-- Estado vazio -->
+    <div id="analyseEmpty" class="saep-card section-card" style="text-align:center; padding:60px 24px;">
+      <i class="fa-solid fa-microscope" style="font-size:2.5rem; color:#a5b4fc; margin-bottom:16px; display:block;"></i>
+      <p style="font-size:1rem; font-weight:700; color:#334155; margin-bottom:8px;">Nenhum dado carregado</p>
+      <p style="font-size:0.9rem; color:#64748b;">Importe a planilha SAEP usando o botão "Importar Planilha" no menu acima.</p>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div id="analyseContent" style="display:none;">
+
+      <!-- KPIs -->
+      <section class="kpi-grid" style="margin-bottom:24px;">
+        <div class="saep-card kpi-card border-blue">
+          <p class="kpi-label">Desempenho médio</p>
+          <p id="ap-media" class="kpi-value text-blue">0%</p>
+        </div>
+        <div class="saep-card kpi-card border-indigo">
+          <p class="kpi-label">Alunos avaliados</p>
+          <p id="ap-total" class="kpi-value text-indigo">0</p>
+        </div>
+        <div class="saep-card kpi-card" style="border-top:5px solid #ef4444;">
+          <p class="kpi-label">Alunos críticos</p>
+          <p id="ap-criticos" class="kpi-value" style="color:#dc2626;">0</p>
+        </div>
+        <div class="saep-card kpi-card border-green">
+          <p class="kpi-label">Taxa de aprovação</p>
+          <p id="ap-aprovacao" class="kpi-value text-green">0%</p>
+        </div>
+        <div class="saep-card kpi-card double-kpi">
+          <div>
+            <p class="mini-kpi-label">Melhor</p>
+            <p id="ap-melhor" class="kpi-mini text-green">0%</p>
+          </div>
+          <div>
+            <p class="mini-kpi-label">Pior</p>
+            <p id="ap-pior" class="kpi-mini text-red">0%</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloco 1: Radar de risco + Distribuição -->
+      <section class="capacity-insights-grid mt-6">
+        <div class="saep-card section-card">
+          <div class="section-title-wrap">
+            <h2 class="section-title">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>Radar de risco — alunos</span>
+            </h2>
+          </div>
+          <div id="ap-riskBanner" style="display:none;"></div>
+          <div id="ap-riskList"></div>
+        </div>
+
+        <div class="saep-card section-card">
+          <div class="section-title-wrap">
+            <h2 class="section-title">
+              <i class="fa-solid fa-chart-pie"></i>
+              <span>Distribuição da turma</span>
+            </h2>
+          </div>
+          <div style="height:220px; position:relative;">
+            <canvas id="ap-distChart"></canvas>
+          </div>
+          <div id="ap-distLegend" style="margin-top:16px;"></div>
+        </div>
+      </section>
+
+      <!-- Bloco 2: Mapa de calor -->
+      <section class="saep-card section-card mt-6">
+        <div class="section-title-wrap">
+          <h2 class="section-title">
+            <i class="fa-solid fa-table-cells"></i>
+            <span>Mapa de calor — desempenho por capacidade</span>
+          </h2>
+        </div>
+        <div class="ap-heatmap-wrap">
+          <table class="ap-heatmap-table" id="ap-heatmapTable"></table>
+        </div>
+        <div class="ap-heatmap-legend">
+          <span>Legenda:</span>
+          <span class="ap-legend-item"><span class="ap-legend-dot" style="background:#fecaca;"></span>Crítico &lt;40%</span>
+          <span class="ap-legend-item"><span class="ap-legend-dot" style="background:#fde68a;"></span>Abaixo 40–59%</span>
+          <span class="ap-legend-item"><span class="ap-legend-dot" style="background:#bfdbfe;"></span>Adequado 60–79%</span>
+          <span class="ap-legend-item"><span class="ap-legend-dot" style="background:#bbf7d0;"></span>Excelente ≥80%</span>
+        </div>
+      </section>
+
+      <!-- Bloco 3: Conhecimentos + Gráfico de capacidades -->
+      <section class="capacity-insights-grid mt-6">
+        <div class="saep-card section-card">
+          <div class="section-title-wrap">
+            <h2 class="section-title">
+              <i class="fa-solid fa-brain"></i>
+              <span>Conhecimentos — do crítico ao melhor</span>
+            </h2>
+          </div>
+          <div id="ap-knowledgeList"></div>
+        </div>
+
+        <div class="saep-card section-card">
+          <div class="section-title-wrap">
+            <h2 class="section-title">
+              <i class="fa-solid fa-layer-group"></i>
+              <span>Desempenho por capacidade</span>
+            </h2>
+          </div>
+          <div style="position:relative; height:260px;">
+            <canvas id="ap-capChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloco 4: Clusters pedagógicos -->
+      <section class="saep-card section-card mt-6">
+        <div class="section-title-wrap">
+          <h2 class="section-title">
+            <i class="fa-solid fa-people-group"></i>
+            <span>Clusters pedagógicos — grupos por perfil</span>
+          </h2>
+        </div>
+        <div id="ap-clusterGrid" class="ap-cluster-grid"></div>
+      </section>
+
+      <!-- Bloco 5: Plano de ação -->
+      <section class="saep-card section-card mt-6">
+        <div class="section-title-wrap">
+          <h2 class="section-title">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Plano de ação pedagógica</span>
+          </h2>
+        </div>
+        <div id="ap-actionPlan"></div>
+      </section>
+
+      <!-- Bloco 6: Análise de itens SAEP -->
+      <section class="saep-card section-card mt-6">
+        <div class="section-title-wrap">
+          <h2 class="section-title">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Análise de itens SAEP — taxa de acerto e gabaritos</span>
+          </h2>
+        </div>
+        <div id="ap-itemsSection"></div>
+      </section>
+
+      <!-- Bloco 7: Distratores visuais -->
+      <section class="saep-card section-card mt-6">
+        <div class="section-title-wrap">
+          <h2 class="section-title">
+            <i class="fa-solid fa-magnifying-glass-chart"></i>
+            <span>Distratores — concentração de erros por alternativa</span>
+          </h2>
+        </div>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:18px;">
+          Quando muitos alunos escolhem a mesma alternativa errada, há uma concepção equivocada específica — não falta de estudo genérica.
+        </p>
+        <div id="ap-distractorsSection" class="ap-distractor-grid"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="js/state.js?v=1777292953"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/utils.js?v=1777292953"></script>
+  <script src="js/storage-service.js?v=1777292953"></script>
+  <script src="js/spreadsheet-service.js?v=1777292953"></script>
+  <script src="js/saep-service.js?v=1777292953"></script>
+  <script src="js/chart-ui.js?v=1777292953"></script>
+  <script src="js/dashboard-ui.js?v=1777292953"></script>
+  <script src="js/analise-ui.js?v=1777292953"></script>
+  <script src="js/theme-switcher.js?v=1777292953"></script>
+  <script src="js/upload-controller.js?v=1777292953"></script>
+  <script src="js/app.js?v=1777292953"></script>
+
+</body>
+</html>
