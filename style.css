@@ -209,41 +209,29 @@ body.saep-body {
    CAPACIDADES (dashboard)
 ===================================================== */
 .capacity-grid {
-  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px;
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px;
 }
 .capacity-card {
-  background: var(--surface);
+  background: var(--surface-soft);
   border:1px solid var(--border);
-  border-radius:16px; padding:20px;
-  transition: background 0.25s, border-color 0.25s, box-shadow 0.2s;
-}
-.capacity-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  border-radius:16px; padding:16px;
+  transition: background 0.25s, border-color 0.25s;
 }
 .capacity-top {
   display:flex; justify-content:space-between;
-  align-items:flex-start; gap:12px; margin-bottom:14px;
+  align-items:center; gap:12px; margin-bottom:12px;
 }
-.capacity-left { display:flex; align-items:flex-start; gap:12px; flex:1; min-width:0; }
+.capacity-left  { display:flex; align-items:center; gap:10px; }
 .capacity-badge {
-  width:42px; height:42px; border-radius:11px; flex-shrink:0;
+  width:40px; height:40px; border-radius:12px;
   display:flex; align-items:center; justify-content:center;
-  font-weight:800; font-size:0.82rem; font-family:monospace;
-  background: var(--surface-soft); border:2px solid currentColor;
+  font-weight:800; font-size:0.84rem;
+  background: var(--surface); border:2px solid currentColor;
 }
-.capacity-name {
-  font-size:0.9rem; font-weight:700;
-  color: var(--text);
-  line-height:1.4; padding-top:2px;
-}
-.capacity-percent {
-  font-size:1.25rem; font-weight:800;
-  font-family:monospace; letter-spacing:-1px;
-  flex-shrink:0;
-}
+.capacity-name    { font-size:0.92rem; font-weight:700; color: var(--text-2); }
+.capacity-percent { font-size:0.95rem; font-weight:800; }
 .progress-track {
-  width:100%; height:8px;
+  width:100%; height:10px;
   background: var(--border);
   border-radius:999px; overflow:hidden;
 }
@@ -566,18 +554,14 @@ body.saep-body {
    DARK MODE — overrides específicos
 ===================================================== */
 :root.dark-mode .capacity-card {
-  background: var(--surface);
+  background: var(--surface-soft);
   border-color: var(--border);
-}
-:root.dark-mode .capacity-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: 0 4px 24px rgba(0,0,0,0.35);
 }
 :root.dark-mode .capacity-badge {
   background: var(--surface-mid);
 }
 :root.dark-mode .capacity-name {
-  color: var(--text);
+  color: var(--text-2);
 }
 :root.dark-mode .knowledge-summary-item {
   background: var(--surface-soft);

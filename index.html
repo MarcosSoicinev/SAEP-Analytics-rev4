@@ -1456,17 +1456,11 @@ function buildKnowledgeHighlightsHtml(knowledgeEntries) {
     return knowledgeEntries
         .map(({ name, performance }) => {
             const knowledgeColor = getLevelColor(getStudentSaepLevel(performance));
-            const barW = Math.round(performance);
 
             return `
-                <div style="margin-top:8px;">
-                    <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:3px;">
-                        <span style="color:var(--text-3,#94a3b8); font-size:11px; line-height:1.35; flex:1;">${name}</span>
-                        <span style="color:${knowledgeColor}; font-weight:700; font-size:12px; white-space:nowrap;">${performance}%</span>
-                    </div>
-                    <div style="height:3px; background:rgba(148,163,184,0.12); border-radius:99px;">
-                        <div style="height:3px; width:${barW}%; background:${knowledgeColor}; border-radius:99px;"></div>
-                    </div>
+                <div style="display:flex; justify-content:space-between; gap:12px; font-size:12px; margin-top:6px;">
+                    <span style="color:#334155; line-height:1.35;">${name}</span>
+                    <span style="color:${knowledgeColor}; font-weight:700; white-space:nowrap;">${performance}%</span>
                 </div>
             `;
         })
@@ -1510,41 +1504,25 @@ function renderCapacityCards(classroomAnalysis) {
                 .sort((firstKnowledge, secondKnowledge) => secondKnowledge.performance - firstKnowledge.performance)
                 .slice(0, 6);
 
-            const nivelLabel = saepLevel;
-            const bgBadge = levelColor + '22';
-
             return `
                 <div class="capacity-card">
                     <div class="capacity-top">
                         <div class="capacity-left">
-                            <div class="capacity-badge" style="
-                                color:${levelColor};
-                                background:${bgBadge};
-                                border:1.5px solid ${levelColor};
-                                font-size:11px; font-weight:800;
-                                padding:4px 8px; border-radius:8px;
-                                font-family:monospace; white-space:nowrap;">
+                            <div class="capacity-badge" style="color:${levelColor}">
                                 ${capacityCode}
                             </div>
-                            <div class="capacity-name" style="color:var(--text,#e2e8f0); font-size:13px; font-weight:600; line-height:1.35;">
-                                ${getCapacityDisplayName(capacityCode)}
-                            </div>
+                            <div class="capacity-name">${getCapacityDisplayName(capacityCode)}</div>
                         </div>
-                        <span class="capacity-percent" style="color:${levelColor}; font-size:20px; font-weight:800; font-family:monospace; letter-spacing:-1px;">
+                        <span class="capacity-percent" style="color:${levelColor}">
                             ${capacityPerformance}%
                         </span>
                     </div>
 
-                    <div style="margin-bottom:4px; display:flex; align-items:center; gap:6px;">
-                        <div class="progress-track" style="flex:1; height:6px; background:rgba(148,163,184,0.12);">
-                            <div class="progress-fill" style="width:${capacityPerformance}%; height:6px; background:${levelColor}; border-radius:99px;"></div>
-                        </div>
-                        <span style="font-size:10px; font-weight:700; color:${levelColor}; white-space:nowrap; background:${bgBadge}; padding:2px 7px; border-radius:99px;">
-                            ${nivelLabel}
-                        </span>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width:${capacityPerformance}%; background-color:${levelColor}"></div>
                     </div>
 
-                    <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(148,163,184,0.12);">
+                    <div style="margin-top:10px; border-top:1px solid #e2e8f0; padding-top:8px;">
                         ${buildKnowledgeHighlightsHtml(topKnowledgeEntries)}
                     </div>
                 </div>
