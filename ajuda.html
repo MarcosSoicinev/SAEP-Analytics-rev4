@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAEP Analytics - Guia do Mentor</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css?v=1777292953">
+
+  <style>
+    /* ── GUIA LAYOUT ── */
+    .guia-wrap {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 32px;
+      align-items: start;
+      padding-bottom: 60px;
+    }
+
+    /* Índice lateral */
+    .guia-sidebar {
+      position: sticky;
+      top: 88px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 16px;
+    }
+    .guia-sidebar h3 {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .guia-sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+      margin-bottom: 2px;
+    }
+    .guia-sidebar a:hover,
+    .guia-sidebar a.active {
+      background: var(--accent-bg, #ede9fe);
+      color: var(--accent);
+    }
+    .guia-sidebar a i { width: 16px; text-align: center; font-size: 0.78rem; }
+
+    /* Conteúdo principal */
+    .guia-content { min-width: 0; }
+
+    .guia-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 36px;
+      margin-bottom: 24px;
+      scroll-margin-top: 88px;
+    }
+
+    .guia-section h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .guia-section h2 .sec-icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .guia-section h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 24px 0 8px;
+    }
+
+    .guia-section p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 12px;
+    }
+
+    .guia-section ul, .guia-section ol {
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+    .guia-section li {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 4px;
+    }
+    .guia-section strong { color: var(--text); }
+
+    /* Tabela */
+    .guia-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin: 16px 0;
+    }
+    .guia-table th {
+      background: #1e3a8a;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+    .guia-table th:first-child { border-radius: 8px 0 0 0; }
+    .guia-table th:last-child  { border-radius: 0 8px 0 0; }
+    .guia-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted, #475569);
+      vertical-align: top;
+      line-height: 1.55;
+    }
+    .guia-table tr:nth-child(even) td { background: var(--bg); }
+    .guia-table tr:last-child td { border-bottom: none; }
+    .guia-table td strong { color: var(--text); }
+
+    :root.dark-mode .guia-table td { color: var(--text-2, #c9d1d9); }
+    :root.dark-mode .guia-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+    :root.dark-mode .guia-table tr:nth-child(odd)  td { background: transparent; }
+
+    /* Alertas */
+    .alert {
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin: 16px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 0.87rem;
+      line-height: 1.6;
+      border-left: 4px solid;
+    }
+    .alert i { margin-top: 2px; flex-shrink: 0; }
+
+    /* Light mode */
+    .alert-info    { background: #dbeafe; border-color: #3b82f6; color: #1e40af; }
+    .alert-warn    { background: #fef3c7; border-color: #f59e0b; color: #78350f; }
+    .alert-danger  { background: #fee2e2; border-color: #ef4444; color: #7f1d1d; }
+    .alert-success { background: #dcfce7; border-color: #22c55e; color: #14532d; }
+
+    /* Dark mode — fundo escuro, texto claro */
+    :root.dark-mode .alert-info    { background: #1e3a5f; border-color: #60a5fa; color: #bfdbfe; }
+    :root.dark-mode .alert-warn    { background: #3d2b00; border-color: #fbbf24; color: #fde68a; }
+    :root.dark-mode .alert-danger  { background: #3b0d0d; border-color: #f87171; color: #fecaca; }
+    :root.dark-mode .alert-success { background: #052e16; border-color: #4ade80; color: #bbf7d0; }
+
+    /* Badges de nível */
+    .nivel-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 700;
+    }
+    .nivel-avancado  { background: #dcfce7; color: #15803d; }
+    .nivel-adequado  { background: #dbeafe; color: #1d4ed8; }
+    .nivel-basico    { background: #fef9c3; color: #92400e; }
+    .nivel-abaixo    { background: #fee2e2; color: #b91c1c; }
+
+    /* FAQ */
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .faq-q {
+      padding: 16px 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      user-select: none;
+    }
+    .faq-q:hover { background: var(--bg); }
+    .faq-a {
+      padding: 0 20px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.2s;
+      font-size: 0.87rem;
+      color: var(--text-2, #475569);
+      line-height: 1.7;
+      background: var(--bg);
+    }
+    .faq-item.open .faq-a {
+      max-height: 600px;
+      padding: 14px 20px 18px;
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-chevron { transition: transform 0.25s; color: var(--accent); }
+
+    :root.dark-mode .faq-a { color: var(--text-2, #c9d1d9); }
+
+    /* Glossário */
+    .gloss-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .gloss-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .gloss-card .gloss-term {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+    .gloss-card p {
+      font-size: 0.82rem;
+      color: var(--text-muted, #475569);
+      margin: 0;
+      line-height: 1.55;
+    }
+    :root.dark-mode .gloss-card p { color: var(--text-2, #c9d1d9); }
+
+    /* Cálculo box */
+    .calc-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      margin: 12px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .calc-box .calc-label {
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-2, #475569);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    :root.dark-mode .calc-box .calc-label { color: var(--text-2, #c9d1d9); }
+
+    /* Passos numerados */
+    .steps { counter-reset: step; padding: 0; list-style: none; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step);
+      width: 28px; height: 28px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .steps li span { font-size: 0.9rem; color: var(--text-2, #475569); line-height: 1.65; }
+    :root.dark-mode .steps li span { color: var(--text-2, #c9d1d9); }
+
+    /* Cards de nível SAEP — dark mode friendly */
+    .nivel-card-danger  { border-left: 4px solid #ef4444; }
+    .nivel-card-warn    { border-left: 4px solid #f59e0b; }
+    .nivel-card-info    { border-left: 4px solid #3b82f6; }
+    .nivel-card-success { border-left: 4px solid #22c55e; }
+
+    /* Cores de texto nos gráficos */
+    .cor-verde    { color: #16a34a; font-weight: 700; }
+    .cor-azul     { color: #2563eb; font-weight: 700; }
+    .cor-amarelo  { color: #b45309; font-weight: 700; }
+    .cor-vermelho { color: #dc2626; font-weight: 700; }
+
+    @media (max-width: 900px) {
+      .guia-wrap { grid-template-columns: 1fr; }
+      .guia-sidebar { position: static; }
+      .gloss-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="saep-body">
+
+  <nav class="saep-navbar">
+    <div class="saep-container nav-inner">
+      <div class="nav-left">
+        <div class="brand-wrap">
+          <div class="brand-icon"><i class="fa-solid fa-chart-column"></i></div>
+          <div class="brand-text">
+            <span class="brand-main">SAEP</span><span class="brand-accent"> Analytics</span>
+          </div>
+        </div>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">
+            <i class="fa-solid fa-users"></i><span>Visão da Turma</span>
+          </a>
+          <a href="aluno.html" class="nav-link">
+            <i class="fa-solid fa-user-graduate"></i><span>Portal Individual</span>
+          </a>
+          <a href="analise.html" class="nav-link">
+            <i class="fa-solid fa-microscope"></i><span>Análise Profunda</span>
+          </a>
+          <a href="ajuda.html" class="nav-link active">
+            <i class="fa-solid fa-circle-question"></i><span>Guia do Mentor</span>
+          </a>
+        </div>
+      </div>
+      <div class="nav-right" style="display:flex; align-items:center; gap:12px;">
+        <div id="courseIndicator" class="course-indicator" style="display:none;">
+          <i class="fa-solid fa-graduation-cap" style="color:#4f46e5; font-size:0.85rem;"></i>
+          <span id="courseIndicatorName" style="font-size:0.88rem; font-weight:700;"></span>
+        </div>
+        <select id="courseSelector" class="student-select" style="display:none;"></select>
+        <label for="uploadPlanilha" class="upload-btn">
+          <i class="fa-solid fa-file-excel text-emerald-600"></i>
+          <span>Importar Planilha</span>
+        </label>
+        <input type="file" id="uploadPlanilha" accept=".xlsx" class="hidden">
+        <input type="file" id="uploadConfig" accept=".xlsx" class="hidden">
+      </div>
+    </div>
+  </nav>
+
+  <main class="saep-container page-space">
+    <section class="page-header">
+      <div>
+        <h1 class="page-title"><i class="fa-solid fa-circle-question" style="color:#4f46e5; margin-right:10px;"></i>Guia do Mentor</h1>
+        <p class="page-subtitle">SENAI-CE · CETAFR — Alexandre Figueira Rodrigues · SAEP Analytics v4</p>
+      </div>
+    </section>
+
+    <div class="guia-wrap">
+
+      <!-- ── SIDEBAR ── -->
+      <aside class="guia-sidebar">
+        <h3><i class="fa-solid fa-list"></i> Índice</h3>
+        <a href="#o-que-e"       onclick="ativar(this)"><i class="fa-solid fa-info-circle"></i> O que é</a>
+        <a href="#primeiros"     onclick="ativar(this)"><i class="fa-solid fa-rocket"></i> Primeiros passos</a>
+        <a href="#importar"      onclick="ativar(this)"><i class="fa-solid fa-file-excel"></i> Importar planilha</a>
+        <a href="#calculos"      onclick="ativar(this)"><i class="fa-solid fa-calculator"></i> Como são os cálculos</a>
+        <a href="#visao-turma"   onclick="ativar(this)"><i class="fa-solid fa-users"></i> Visão da Turma</a>
+        <a href="#boletim"       onclick="ativar(this)"><i class="fa-solid fa-user-graduate"></i> Boletim do Aluno</a>
+        <a href="#analise"       onclick="ativar(this)"><i class="fa-solid fa-microscope"></i> Análise Profunda</a>
+        <a href="#niveis"        onclick="ativar(this)"><i class="fa-solid fa-layer-group"></i> Níveis SAEP</a>
+        <a href="#faq"           onclick="ativar(this)"><i class="fa-solid fa-comments"></i> Perguntas frequentes</a>
+        <a href="#glossario"     onclick="ativar(this)"><i class="fa-solid fa-book"></i> Glossário</a>
+      </aside>
+
+      <!-- ── CONTEÚDO ── -->
+      <div class="guia-content">
+
+        <!-- 1. O QUE É -->
+        <section class="guia-section" id="o-que-e">
+          <h2>
+            <span class="sec-icon" style="background:#ede9fe; color:#4f46e5;"><i class="fa-solid fa-info-circle"></i></span>
+            O que é o SAEP Analytics
+          </h2>
+          <p>O <strong>SAEP Analytics</strong> é um painel pedagógico desenvolvido para o SENAI-CE CETAFR que transforma os relatórios de avaliação SAEP em informações visuais claras e acionáveis para os mentores.</p>
+          <p>Ao importar a planilha exportada do sistema nacional, o sistema automaticamente:</p>
+          <ul>
+            <li>Lê cada resposta de cada aluno item a item</li>
+            <li>Calcula taxas de acerto por capacidade, conhecimento e aluno</li>
+            <li>Classifica os alunos nos quatro níveis SAEP</li>
+            <li>Identifica os itens com maior taxa de erro</li>
+            <li>Gera diagnóstico pedagógico individual por aluno</li>
+            <li>Permite imprimir o boletim para entrega ao aluno</li>
+          </ul>
+          <div class="alert alert-info">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div><strong>Privacidade:</strong> o sistema funciona 100% no navegador. Nenhum dado é enviado a servidores externos — tudo fica armazenado localmente no seu computador.</div>
+          </div>
+        </section>
+
+        <!-- 2. PRIMEIROS PASSOS -->
+        <section class="guia-section" id="primeiros">
+          <h2>
+            <span class="sec-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-rocket"></i></span>
+            Primeiros passos
+          </h2>
+          <h3>Acesso</h3>
+          <p>Acesse pelo link do GitHub Pages fornecido pelo coordenador. Use <strong>Google Chrome</strong> ou <strong>Microsoft Edge</strong> — Safari e navegadores antigos podem ter incompatibilidades.</p>
+
+          <h3>Barra de navegação</h3>
+          <table class="guia-table">
+            <thead><tr><th>Botão / Link</th><th>Função</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Visão da Turma</strong></td><td>Dashboard geral com KPIs, ranking e desempenho coletivo</td></tr>
+              <tr><td><strong>Portal Individual</strong></td><td>Ficha individual de cada aluno com gráficos e diagnóstico</td></tr>
+              <tr><td><strong>Análise Profunda</strong></td><td>Mapa de calor, análise de itens e distratores</td></tr>
+              <tr><td><strong>Guia do Mentor</strong></td><td>Esta página de ajuda</td></tr>
+              <tr><td><strong>Tema (lua/sol)</strong></td><td>Alterna entre modo escuro e claro</td></tr>
+              <tr><td><strong>Importar Planilha</strong></td><td>Carrega a planilha .xlsx exportada do SAEP nacional</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 3. IMPORTAR PLANILHA -->
+        <section class="guia-section" id="importar">
+          <h2>
+            <span class="sec-icon" style="background:#d1fae5; color:#059669;"><i class="fa-solid fa-file-excel"></i></span>
+            Importar a Planilha SAEP
+          </h2>
+          <h3>Qual arquivo importar</h3>
+          <p>O arquivo correto é a planilha <strong>.xlsx</strong> exportada diretamente do <strong>sistema SAEP nacional</strong>. Ela deve conter as abas:</p>
+          <ul>
+            <li><em>Desempenho Individual – Resumo</em> — dados consolidados por aluno</li>
+            <li><em>Desemp. Ind. por Registro</em> — cada resposta de cada aluno a cada item</li>
+          </ul>
+          <div class="alert alert-warn">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>Não modifique a planilha antes de importar. Qualquer alteração nas abas ou colunas pode causar erro de leitura.</div>
+          </div>
+
+          <h3>Como importar</h3>
+          <ol class="steps">
+            <li><span>Clique em <strong>Importar Planilha</strong> na barra superior</span></li>
+            <li><span>Selecione o arquivo <strong>.xlsx</strong> exportado do SAEP</span></li>
+            <li><span>Aguarde o processamento — a página recarrega automaticamente</span></li>
+            <li><span>Confirme se o <strong>nome do curso</strong> apareceu corretamente no indicador do topo</span></li>
+          </ol>
+          <div class="alert alert-success">
+            <i class="fa-solid fa-check-circle"></i>
+            <div>Após importar, os dados ficam salvos no navegador. Não é necessário reimportar a cada acesso — apenas quando houver uma nova avaliação.</div>
+          </div>
+        </section>
+
+        <!-- 4. COMO SÃO OS CÁLCULOS -->
+        <section class="guia-section" id="calculos">
+          <h2>
+            <span class="sec-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-calculator"></i></span>
+            Como são feitos os cálculos
+          </h2>
+          <p>Esta é a seção mais importante para validar a veracidade dos dados. Cada número exibido no sistema tem uma fórmula específica baseada diretamente na planilha SAEP.</p>
+
+          <h3>Desempenho do aluno</h3>
+          <div class="calc-box">
+            <div class="calc-label">Fórmula</div>
+            Desempenho (%) = Acertos do aluno ÷ Total de itens da prova × 100
+          </div>
+          <p>Exemplo: numa prova com N itens, um aluno com 19 acertos e N=25 → <strong>19 ÷ 25 × 100 = 76%</strong>. O total de itens é contado automaticamente pelos identificadores únicos da planilha — muda a cada importação.</p>
+
+          <h3>Total de itens da prova</h3>
+          <div class="calc-box">
+            <div class="calc-label">Fórmula</div>
+            Itens = contagem de Identificadores únicos (SAEP_XXXXX distintos) na planilha
+          </div>
+          <div class="alert alert-danger">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <div><strong>Confusão comum:</strong> a planilha tem muitas linhas porque cada aluno respondeu cada item uma vez. Exemplo: 12 alunos × 25 itens = 300 registros. O número de <strong>itens reais da prova</strong> é a contagem de identificadores únicos (SAEP_XXXXX distintos) — o sistema detecta isso automaticamente a cada importação.</div>
+          </div>
+
+          <h3>Taxa de acerto por capacidade</h3>
+          <div class="calc-box">
+            <div class="calc-label">Fórmula</div>
+            Taxa (%) = Total de acertos da turma naquela capacidade ÷ Total de respostas × 100
+          </div>
+          <p>Exemplo: C1 tem 7 itens × 12 alunos = 84 respostas possíveis. Se 57 foram corretas → <strong>57 ÷ 84 = 67,9%</strong>.</p>
+
+          <h3>Tabela de todos os cálculos</h3>
+          <table class="guia-table">
+            <thead><tr><th>Indicador</th><th>Fórmula</th><th>Exemplo real (turma atual)</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Desempenho do aluno</strong></td><td>Acertos ÷ Total de itens da prova × 100</td><td>19 ÷ 25 × 100 = 76%</td></tr>
+              <tr><td><strong>Taxa por capacidade</strong></td><td>Acertos turma na cap. ÷ Respostas totais na cap. × 100</td><td>57 ÷ 84 = 67,9% (C1)</td></tr>
+              <tr><td><strong>Taxa por conhecimento</strong></td><td>Acertos naquele conhecimento ÷ Respostas × 100</td><td>19 ÷ 24 = 79,2% (Metrologia)</td></tr>
+              <tr><td><strong>Desempenho médio da turma</strong></td><td>Soma dos desempenhos % ÷ nº de alunos</td><td>(76+68+…+52) ÷ 12 = 62,3%</td></tr>
+              <tr><td><strong>Itens na prova</strong></td><td>Identificadores SAEP únicos (SAEP_XXXXX distintos) — NÃO é linhas da planilha. Máximo 40 itens.</td><td>Varia por prova — detectado automaticamente</td></tr>
+              <tr><td><strong>Taxa de aprovação</strong></td><td>Alunos com ≥ 60% ÷ total × 100</td><td>9 ÷ 12 = 75%</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 5. VISÃO DA TURMA -->
+        <section class="guia-section" id="visao-turma">
+          <h2>
+            <span class="sec-icon" style="background:#dbeafe; color:#2563eb;"><i class="fa-solid fa-users"></i></span>
+            Visão da Turma
+          </h2>
+          <p>Tela inicial com o panorama geral coletivo da turma avaliada.</p>
+
+          <h3>KPIs do topo</h3>
+          <table class="guia-table">
+            <thead><tr><th>KPI</th><th>Significado</th><th>Fórmula</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Desempenho Médio</strong></td><td>Média geral da turma</td><td>Soma dos desempenhos ÷ nº de alunos</td></tr>
+              <tr><td><strong>Total de Alunos</strong></td><td>Quantos foram avaliados</td><td>Contagem de nomes distintos</td></tr>
+              <tr><td><strong>Taxa de Aprovação</strong></td><td>% com desempenho ≥ 60%</td><td>Alunos ≥ 60% ÷ total × 100</td></tr>
+              <tr><td><strong>Tempo Médio</strong></td><td>Média de duração da prova</td><td>Média dos tempos individuais, em minutos</td></tr>
+              <tr><td><strong>Melhor Desempenho</strong></td><td>Maior % individual</td><td>Max() dos desempenhos</td></tr>
+              <tr><td><strong>Pior Desempenho</strong></td><td>Menor % individual</td><td>Min() dos desempenhos</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Cards de Capacidade</h3>
+          <p>Cada capacidade avaliada (C1, C2…) aparece como um cartão. O <strong>percentual colorido</strong> é a taxa de acerto da turma naquela capacidade — não de um aluno individual.</p>
+          <p>Abaixo do percentual: <em>"N itens · X/Y respostas corretas"</em> — N é quantos itens diferentes a prova tinha naquela capacidade; X/Y mostra acertos/total de respostas da turma toda.</p>
+
+          <h3>Escala de cores</h3>
+          <table class="guia-table">
+            <thead><tr><th>Cor</th><th>Faixa</th><th>Interpretação</th></tr></thead>
+            <tbody>
+              <tr><td><span class="cor-vermelho">■ Vermelho</span></td><td>Abaixo de 40%</td><td>Crítico — intervenção imediata</td></tr>
+              <tr><td><span class="cor-amarelo">■ Amarelo</span></td><td>40% a 59%</td><td>Básico — precisa consolidação</td></tr>
+              <tr><td><span class="cor-azul">■ Azul</span></td><td>60% a 79%</td><td>Adequado — satisfatório</td></tr>
+              <tr><td><span class="cor-verde">■ Verde</span></td><td>80% ou mais</td><td>Avançado — domínio consistente</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Ranking da Turma</h3>
+          <p>Tabela no final da tela com todos os alunos ordenados do melhor para o pior, com o percentual por capacidade e o nível SAEP final de cada um.</p>
+          <div class="alert alert-success">
+            <i class="fa-solid fa-lightbulb"></i>
+            <div>Use o ranking para identificar rapidamente quais alunos precisam de prioridade (nível Básico ou Abaixo do Básico) e quais capacidades são o ponto crítico de cada um.</div>
+          </div>
+        </section>
+
+        <!-- 6. BOLETIM DO ALUNO -->
+        <section class="guia-section" id="boletim">
+          <h2>
+            <span class="sec-icon" style="background:#ede9fe; color:#7c3aed;"><i class="fa-solid fa-user-graduate"></i></span>
+            Boletim do Aluno
+          </h2>
+          <p>Ficha individual de cada estudante — pode ser impressa e entregue ao aluno.</p>
+
+          <h3>Selecionando um aluno</h3>
+          <p>Use o menu suspenso no topo da tela. Se ele estiver vazio, a planilha ainda não foi importada.</p>
+
+          <h3>Campos do cabeçalho</h3>
+          <table class="guia-table">
+            <thead><tr><th>Campo</th><th>O que mostra</th><th>Origem</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Nome</strong></td><td>Nome completo do aluno</td><td>Campo "Aluno" da planilha</td></tr>
+              <tr><td><strong>Matrícula</strong></td><td>Número de matrícula</td><td>Campo "Matrícula" da planilha</td></tr>
+              <tr><td><strong>Acertos / Erros</strong></td><td>Questões corretas e incorretas</td><td>Campos diretos da planilha</td></tr>
+              <tr><td><strong>Tempo</strong></td><td>Duração da prova em minutos</td><td>Campo "Tempo de realização"</td></tr>
+              <tr><td><strong>Desempenho % (número grande)</strong></td><td>Acertos ÷ Total de itens da prova × 100 (total detectado automaticamente)</td><td>Vem da planilha SAEP</td></tr>
+              <tr><td><strong>Nível SAEP (badge)</strong></td><td>Classificação: Básico, Adequado…</td><td>Derivado do desempenho %</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Gráficos de desempenho individual</h3>
+          <table class="guia-table">
+            <thead><tr><th>Gráfico</th><th>O que mostra</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Por Capacidade</strong></td><td>Taxa de acerto <em>deste aluno</em> em cada capacidade. Barras vermelhas = capacidades críticas para reforço.</td></tr>
+              <tr><td><strong>Por Conhecimento</strong></td><td>Taxa de acerto <em>deste aluno</em> em cada sub-tópico. Identifica os conteúdos que mais precisam de atenção.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Diagnóstico Pedagógico</h3>
+          <p>Gerado automaticamente abaixo dos gráficos. Contém:</p>
+          <ul>
+            <li><strong>Leitura pedagógica</strong> — interpretação do nível SAEP do aluno</li>
+            <li><strong>Ponto mais forte</strong> — capacidade com maior % de acerto deste aluno</li>
+            <li><strong>Ponto crítico</strong> — capacidade com menor % de acerto deste aluno</li>
+            <li><strong>Melhor e pior conhecimento</strong> — sub-tópicos de maior e menor desempenho</li>
+            <li><strong>Encaminhamento prioritário</strong> — orientação específica para a capacidade mais fraca</li>
+            <li><strong>Estratégia recomendada</strong> — sugestão geral de abordagem pedagógica</li>
+          </ul>
+
+          <h3>Imprimir / Exportar</h3>
+          <table class="guia-table">
+            <thead><tr><th>Botão</th><th>O que faz</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Imprimir Boletim SENAI</strong></td><td>Abre a janela de impressão com o boletim completo (inclui diagnóstico). Salve como PDF ou imprima em papel.</td></tr>
+              <tr><td><strong>PDF do Aluno</strong></td><td>Gera PDF individual com os gráficos capturados. Ideal para e-mail.</td></tr>
+              <tr><td><strong>PDF da Turma</strong></td><td>Gera um PDF com um boletim por página para todos os alunos. Ideal para arquivo pedagógico completo.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 7. ANÁLISE PROFUNDA -->
+        <section class="guia-section" id="analise">
+          <h2>
+            <span class="sec-icon" style="background:#fce7f3; color:#be185d;"><i class="fa-solid fa-microscope"></i></span>
+            Análise Profunda
+          </h2>
+          <p>Visão detalhada para mentores e coordenadores — mapa de calor, itens por dificuldade e análise de distratores.</p>
+
+          <h3>Alerta de Risco Pedagógico</h3>
+          <p>Se houver alunos com desempenho abaixo de 40%, um painel vermelho aparece no topo listando esses estudantes. Eles necessitam de intervenção imediata.</p>
+
+          <h3>Mapa de Calor</h3>
+          <p>Tabela cruzando todos os alunos (linhas) × todas as capacidades (colunas). Cada célula mostra o percentual de acerto de um aluno em uma capacidade, colorida conforme o desempenho.</p>
+          <div class="alert alert-info">
+            <i class="fa-solid fa-lightbulb"></i>
+            <div>
+              <strong>Como ler o mapa:</strong><br>
+              Coluna inteira vermelha = problema de <strong>capacidade da turma inteira</strong>.<br>
+              Linha inteira vermelha = problema <strong>específico de um aluno</strong>.
+            </div>
+          </div>
+
+          <h3>Tabela de Itens</h3>
+          <table class="guia-table">
+            <thead><tr><th>Coluna</th><th>O que contém</th></tr></thead>
+            <tbody>
+              <tr><td><strong>ID do Item</strong></td><td>Código SAEP único (ex: SAEP_25751)</td></tr>
+              <tr><td><strong>Capacidade</strong></td><td>Qual capacidade o item avalia (C1–C7)</td></tr>
+              <tr><td><strong>Conhecimento</strong></td><td>Sub-tópico avaliado</td></tr>
+              <tr><td><strong>Dificuldade</strong></td><td>Muito Fácil, Fácil, Médio, Difícil, Muito Difícil</td></tr>
+              <tr><td><strong>Gabarito</strong></td><td>Alternativa correta (A a E)</td></tr>
+              <tr><td><strong>Taxa de Acerto</strong></td><td>% de alunos que acertaram este item</td></tr>
+              <tr><td><strong>Distrator Principal</strong></td><td>Alternativa errada mais escolhida pela turma</td></tr>
+            </tbody>
+          </table>
+
+          <div class="alert alert-warn">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>O <strong>distrator principal</strong> é pedagogicamente muito relevante — indica o equívoco conceitual mais comum da turma. Use para planejar revisões específicas.</div>
+          </div>
+        </section>
+
+        <!-- 8. NÍVEIS SAEP -->
+        <section class="guia-section" id="niveis">
+          <h2>
+            <span class="sec-icon" style="background:#f0fdf4; color:#16a34a;"><i class="fa-solid fa-layer-group"></i></span>
+            Entendendo os Níveis SAEP
+          </h2>
+          <p>O SAEP classifica cada aluno em quatro níveis. A planilha exportada não inclui a proficiência TRI — apenas o percentual de acerto. Por isso o sistema usa os <strong>limiares percentuais oficiais SAEP</strong>:</p>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0;">
+            <div class="gloss-card nivel-card-danger">
+              <div class="gloss-term" style="color:#ef4444;"><i class="fa-solid fa-circle-xmark"></i> Abaixo do Básico</div>
+              <p>Desempenho abaixo de <strong>40%</strong>. Dificuldades sérias — necessita intervenção intensiva e acompanhamento frequente.</p>
+            </div>
+            <div class="gloss-card nivel-card-warn">
+              <div class="gloss-term" style="color:#f59e0b;"><i class="fa-solid fa-circle-minus"></i> Básico</div>
+              <p>Desempenho entre <strong>40% e 59%</strong>. Domínio parcial — precisa de consolidação sistemática dos conteúdos.</p>
+            </div>
+            <div class="gloss-card nivel-card-info">
+              <div class="gloss-term" style="color:#3b82f6;"><i class="fa-solid fa-circle-check"></i> Adequado</div>
+              <p>Desempenho entre <strong>60% e 79%</strong>. Satisfatório — há pontos específicos a reforçar, mas dentro do esperado.</p>
+            </div>
+            <div class="gloss-card nivel-card-success">
+              <div class="gloss-term" style="color:#22c55e;"><i class="fa-solid fa-star"></i> Avançado</div>
+              <p>Desempenho de <strong>80% ou mais</strong>. Domínio consistente — potencial para aprofundamento e desafios maiores.</p>
+            </div>
+          </div>
+
+          <div class="alert alert-warn">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>Nível <strong>Adequado não significa "não precisa de atenção"</strong>. Significa que está dentro do esperado, mas o boletim individual pode revelar capacidades específicas abaixo do ideal para aquele aluno.</div>
+          </div>
+
+          <div class="alert alert-info">
+            <i class="fa-solid fa-circle-info"></i>
+            <div>Para o <strong>nível oficial com escala TRI</strong> (0–1000 pontos), consulte sempre o portal SAEP nacional. O sistema usa o percentual de acerto como proxy — valores podem diferir levemente em casos de itens com dificuldades muito distintas.</div>
+          </div>
+        </section>
+
+        <!-- 9. FAQ -->
+        <section class="guia-section" id="faq">
+          <h2>
+            <span class="sec-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-comments"></i></span>
+            Perguntas Frequentes dos Mentores
+          </h2>
+
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Por que a taxa de aprovação é diferente da média geral?
+              <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+            <div class="faq-a">A média é a soma dos desempenhos dividida pelo número de alunos. A taxa de aprovação conta apenas quantos alunos estão acima de 60%. É possível ter média alta mas poucos aprovados (poucos alunos com notas muito altas), ou média baixa com muitos aprovados (turma homogênea perto de 60%).</div>
+          </div>
+
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Por que um conhecimento pode ter mais respostas do que o total de itens da prova?
+              <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+            <div class="faq-a">Um mesmo conhecimento pode aparecer em mais de uma capacidade. Por exemplo, "Processos de Fabricação Convencional" aparece em C2, C3 e C4 — são 3 itens distintos × 12 alunos = 36 respostas. O sistema exibe corretamente "3 itens na prova · 27/36 respostas corretas". O número de <strong>itens únicos</strong> de cada conhecimento é sempre ≤ ao total de itens da prova, que pode ser de até 40.</div>
+          </div>
+
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Os gráficos mostram a média da turma ou o desempenho do aluno individual?
+              <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+            <div class="faq-a">Depende da tela. Na <strong>Visão da Turma</strong> e na <strong>Análise Profunda</strong>, todos os gráficos e cards mostram a média coletiva da turma. No <strong>Portal Individual (Boletim)</strong>, os gráficos mostram o desempenho individual do aluno selecionado.</div>
+          </div>
+
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Por que o aluno pode ter nível diferente no sistema e no portal SAEP nacional?
+              <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+            <div class="faq-a">O portal SAEP nacional usa proficiência TRI (escala 0–1000) que pondera a dificuldade de cada item. O SAEP Analytics usa o percentual de acerto direto, pois a planilha exportada não inclui a pontuação TRI individual. Em casos de itens de dificuldades muito distintas, pode haver diferença de classificação. Para o nível oficial, use sempre o portal nacional.</div>
+          </div>
+
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">O sistema armazena dados dos alunos em algum servidor?
+              <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+            <div class="faq-a">Não. Todos os dados ficam armazenados exclusivamente no navegador do computador onde a planilha foi importada (localStorage). Nenhuma informação é enviada externamente. Os dados são apagados se o cache do navegador for limpo — nesse caso, basta reimportar a planilha.</div>
+          </div>
+
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">Posso usar o sistema em computadores diferentes?
+              <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+            <div class="faq-a">Sim, mas os dados não são compartilhados automaticamente entre máquinas. Cada computador tem seu próprio armazenamento local. Para usar em outro computador, basta reimportar a mesma planilha .xlsx.</div>
+          </div>
+
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">O que fazer se a página ficar em branco após importar?
+              <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+            <div class="faq-a">Verifique se a planilha importada é a exportada diretamente do sistema SAEP nacional (sem modificações). Se o problema persistir, clique em <strong>Importar Planilha</strong> novamente. Em último caso, acesse <code>clear-cache.html</code> na URL do sistema para limpar o cache e reimporte a planilha.</div>
+          </div>
+
+          <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-q">O nome do curso não apareceu automaticamente. O que fazer?
+              <i class="fa-solid fa-chevron-down faq-chevron"></i></div>
+            <div class="faq-a">O sistema tenta detectar o curso automaticamente pelo nome na planilha. Se não detectar, as capacidades aparecem apenas como "C1", "C2" sem descrição. Nesse caso, entre em contato com o coordenador para verificar se o curso está configurado no sistema.</div>
+          </div>
+        </section>
+
+        <!-- 10. GLOSSÁRIO -->
+        <section class="guia-section" id="glossario">
+          <h2>
+            <span class="sec-icon" style="background:#f3f4f6; color:#374151;"><i class="fa-solid fa-book"></i></span>
+            Glossário
+          </h2>
+          <div class="gloss-grid">
+            <div class="gloss-card">
+              <div class="gloss-term">SAEP</div>
+              <p>Sistema de Avaliação e Evidência de Proficiência — avaliação nacional do SENAI que mede o desempenho dos alunos nas capacidades do curso técnico.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">Capacidade (C1, C2…)</div>
+              <p>Agrupamento de habilidades definido pela matriz curricular do curso. Cada prova SAEP avalia entre 5 e 10 capacidades.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">Conhecimento</div>
+              <p>Sub-tópico avaliado dentro de uma capacidade (ex: "Metrologia", "Física Aplicada"). Um item pode ter um ou mais conhecimentos.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">Item</div>
+              <p>Questão individual da prova, identificada por código único (SAEP_XXXXX). A prova diagnóstica tem no máximo 40 itens.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">Taxa de Acerto</div>
+              <p>Percentual de respostas corretas. Pode ser calculada por aluno, por capacidade, por conhecimento ou por item.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">Desempenho (%)</div>
+              <p>Taxa de acerto do aluno: acertos ÷ total de itens da prova × 100. Base de todos os cálculos do sistema.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">Proficiência TRI</div>
+              <p>Pontuação em escala (ex: 0–1000) calculada pela Teoria de Resposta ao Item, que considera a dificuldade de cada questão. Disponível apenas no portal SAEP nacional.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">Distrator</div>
+              <p>Alternativa errada de uma questão de múltipla escolha. O "distrator principal" é a alternativa errada mais escolhida pela turma.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">KPI</div>
+              <p>Indicador-chave de desempenho (Key Performance Indicator). No sistema, são os cartões com valores resumidos no topo de cada tela.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">Mapa de Calor</div>
+              <p>Tabela colorida cruzando alunos × capacidades. Facilita a identificação visual de padrões de desempenho coletivo e individual.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">localStorage</div>
+              <p>Área de armazenamento local do navegador onde o sistema salva os dados importados. Não é um banco de dados na nuvem — é exclusivo do seu computador.</p>
+            </div>
+            <div class="gloss-card">
+              <div class="gloss-term">Diagnóstico Pedagógico</div>
+              <p>Texto gerado automaticamente pelo sistema com a leitura pedagógica, pontos fortes e críticos, e encaminhamentos específicos de cada aluno.</p>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /.guia-content -->
+    </div><!-- /.guia-wrap -->
+  </main>
+
+  <script src="config.js"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/storage-service.js"></script>
+  <script src="js/saep-service.js"></script>
+  <script src="js/spreadsheet-service.js"></script>
+  <script src="js/upload-controller.js"></script>
+  <script src="js/theme-switcher.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // FAQ toggle
+    function toggleFaq(el) {
+      el.classList.toggle('open');
+    }
+
+    // Sidebar active link
+    function ativar(link) {
+      document.querySelectorAll('.guia-sidebar a').forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    }
+
+    // Highlight sidebar link on scroll
+    const sections = document.querySelectorAll('.guia-section');
+    const links = document.querySelectorAll('.guia-sidebar a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 120) current = s.id;
+      });
+      links.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }, { passive: true });
+  </script>
+</body>
+</html>
