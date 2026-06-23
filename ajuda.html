@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -350,8 +350,8 @@
           <i class="fa-solid fa-file-excel text-emerald-600"></i>
           <span>Importar Planilha</span>
         </label>
-        <input type="file" id="uploadPlanilha" accept=".xlsx" class="hidden">
-        <input type="file" id="uploadConfig" accept=".xlsx" class="hidden">
+        <input type="file" id="uploadPlanilha" accept=".xlsx" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;">
+        <input type="file" id="uploadConfig" accept=".xlsx" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;">
       </div>
     </div>
   </nav>
@@ -373,6 +373,7 @@
         <a href="#primeiros"     onclick="ativar(this)"><i class="fa-solid fa-rocket"></i> Primeiros passos</a>
         <a href="#importar"      onclick="ativar(this)"><i class="fa-solid fa-file-excel"></i> Importar planilha</a>
         <a href="#calculos"      onclick="ativar(this)"><i class="fa-solid fa-calculator"></i> Como são os cálculos</a>
+        <a href="#conferencia"   onclick="ativar(this)"><i class="fa-solid fa-clipboard-check"></i> Conferir dados</a>
         <a href="#visao-turma"   onclick="ativar(this)"><i class="fa-solid fa-users"></i> Visão da Turma</a>
         <a href="#boletim"       onclick="ativar(this)"><i class="fa-solid fa-user-graduate"></i> Boletim do Aluno</a>
         <a href="#analise"       onclick="ativar(this)"><i class="fa-solid fa-microscope"></i> Análise Profunda</a>
@@ -500,18 +501,89 @@
               <tr><td><strong>Taxa por conhecimento</strong></td><td>Acertos naquele conhecimento ÷ Respostas × 100</td><td>19 ÷ 24 = 79,2% (Metrologia)</td></tr>
               <tr><td><strong>Desempenho médio da turma</strong></td><td>Soma dos desempenhos % ÷ nº de alunos</td><td>(76+68+…+52) ÷ 12 = 62,3%</td></tr>
               <tr><td><strong>Itens na prova</strong></td><td>Identificadores SAEP únicos (SAEP_XXXXX distintos) — NÃO é linhas da planilha. Máximo 40 itens.</td><td>Varia por prova — detectado automaticamente</td></tr>
-              <tr><td><strong>Taxa de aprovação</strong></td><td>Alunos com ≥ 60% ÷ total × 100</td><td>9 ÷ 12 = 75%</td></tr>
+              <tr><td><strong>Adequado ou superior</strong></td><td>Alunos com desempenho ≥ 60% ÷ total × 100</td><td>9 ÷ 12 = 75%</td></tr>
             </tbody>
           </table>
         </section>
 
-        <!-- 5. VISÃO DA TURMA -->
+        <!-- 5. CONFERÊNCIA DOS DADOS -->
+        <section class="guia-section" id="conferencia">
+          <h2>
+            <span class="sec-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-clipboard-check"></i></span>
+            Conferência dos dados
+          </h2>
+          <p>Use esta seção quando algum número parecer divergente. Ela mostra onde olhar na planilha SAEP e qual critério o SAEP Analytics usa para calcular cada indicador.</p>
+
+          <div class="alert alert-success">
+            <i class="fa-solid fa-lightbulb"></i>
+            <div><strong>Regra principal:</strong> o sistema calcula os painéis principalmente pela aba <em>Desemp. Ind. por Registro</em>, porque ela contém cada resposta de cada aluno em cada item. A aba <em>Desempenho Individual - Resumo</em> é usada para dados consolidados por aluno, como nome, matrícula, acertos, erros, desempenho e tempo.</div>
+          </div>
+
+          <h3>Checklist rápido de validação</h3>
+          <table class="guia-table">
+            <thead><tr><th>O que conferir</th><th>Onde olhar na planilha</th><th>Como comparar com o sistema</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Turma e curso</strong></td><td>Aba <em>Desemp. Ind. por Registro</em>, colunas <strong>Turma</strong> e <strong>Curso</strong></td><td>Devem aparecer no topo do sistema. O sistema usa o valor da planilha, não o nome do arquivo.</td></tr>
+              <tr><td><strong>Total de alunos</strong></td><td>Aba <em>Desempenho Individual - Resumo</em>, linhas de alunos abaixo do cabeçalho</td><td>Conte apenas linhas com nome de aluno, matrícula e acertos/erros válidos.</td></tr>
+              <tr><td><strong>Total de itens</strong></td><td>Aba <em>Desemp. Ind. por Registro</em>, coluna <strong>Identificador</strong></td><td>Conte identificadores SAEP únicos. Não use a quantidade de linhas.</td></tr>
+              <tr><td><strong>Total de registros</strong></td><td>Aba <em>Desemp. Ind. por Registro</em></td><td>Em prova regular, normalmente é alunos × itens. Exemplo: 19 alunos × 40 itens = 760 registros.</td></tr>
+              <tr><td><strong>Desempenho de um aluno</strong></td><td>Aba <em>Desempenho Individual - Resumo</em>, colunas <strong>Acertos</strong>, <strong>Erros</strong> e <strong>Desempenho</strong></td><td>Acertos ÷ itens × 100. Exemplo: 32 ÷ 40 = 80%.</td></tr>
+              <tr><td><strong>Capacidade da turma</strong></td><td>Aba <em>Desemp. Ind. por Registro</em>, colunas <strong>Capacidade</strong>, <strong>Marcação respondente</strong> e <strong>Gabarito</strong></td><td>Acertos naquela capacidade ÷ respostas naquela capacidade × 100.</td></tr>
+              <tr><td><strong>Conhecimento</strong></td><td>Aba <em>Desemp. Ind. por Registro</em>, coluna <strong>Conhecimento</strong></td><td>Acertos daquele conhecimento ÷ respostas daquele conhecimento × 100. Um conhecimento pode aparecer em mais de uma capacidade.</td></tr>
+              <tr><td><strong>Distratores</strong></td><td>Aba <em>Desemp. Ind. por Registro</em>, colunas <strong>Marcação respondente</strong> e <strong>Gabarito</strong></td><td>Alternativa errada mais escolhida pelos alunos em cada item.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Exemplo real de conferência</h3>
+          <p>Na turma <strong>00044.2024.0024</strong> do curso <strong>Técnico em Mecânica</strong>, a planilha possui 19 alunos e 40 itens. Por isso a aba de registros contém <strong>760 respostas</strong> (19 × 40).</p>
+          <table class="guia-table">
+            <thead><tr><th>Indicador</th><th>Conferência</th><th>Resultado esperado</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Média da turma</strong></td><td>Média dos desempenhos individuais dos 19 alunos</td><td>48,8% no sistema; pode aparecer como 49,00% em abas oficiais arredondadas.</td></tr>
+              <tr><td><strong>C1</strong></td><td>87 acertos em 171 respostas</td><td>87 ÷ 171 = 50,9%</td></tr>
+              <tr><td><strong>C2</strong></td><td>63 acertos em 114 respostas</td><td>63 ÷ 114 = 55,3%</td></tr>
+              <tr><td><strong>Aluno com 32 acertos</strong></td><td>32 acertos em 40 itens</td><td>80,0%</td></tr>
+              <tr><td><strong>Distribuição</strong></td><td>6 alunos abaixo de 40%, 7 entre 40% e 59%, 5 entre 60% e 79%, 1 com 80% ou mais</td><td>6 críticos, 7 básicos, 5 adequados e 1 avançado.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Abas da planilha: quando usar cada uma</h3>
+          <table class="guia-table">
+            <thead><tr><th>Aba</th><th>Uso principal</th><th>Atenção</th></tr></thead>
+            <tbody>
+              <tr><td><em>Desempenho Individual - Resumo</em></td><td>Conferir aluno, matrícula, desempenho, acertos, erros e tempo.</td><td>Pode ter linhas de resumo antes ou depois da lista de alunos. Não conte essas linhas como alunos.</td></tr>
+              <tr><td><em>Desemp. Ind. por Registro</em></td><td>Conferir capacidades, conhecimentos, itens, gabaritos, marcações e distratores.</td><td>É a base principal dos cálculos analíticos do sistema.</td></tr>
+              <tr><td><em>D. por Competência - Itens</em></td><td>Conferir taxa de acerto e alternativas por item.</td><td>Boa para validar distratores e percentual de acerto de cada item.</td></tr>
+              <tr><td><em>D. por Competência - Cruzamento</em></td><td>Conferir aproveitamentos por cruzamentos pedagógicos de subfunção, padrão, capacidade e conhecimento.</td><td>Nem sempre bate linha a linha com os cards do sistema, porque o agrupamento é diferente.</td></tr>
+              <tr><td><em>D. por Competência - Detalhes</em></td><td>Ver detalhes pedagógicos e itens associados a cada bloco de competência.</td><td>Útil para análise pedagógica, mas não substitui a aba por registro para auditoria matemática.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Motivos comuns de divergência</h3>
+          <div class="alert alert-danger">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div><strong>Planilhas com blocos extras:</strong> algumas exportações trazem seções como <strong>PROVA IMPRESSA</strong>, cabeçalhos repetidos ou linhas de resumo no meio da aba. Essas linhas não representam alunos nem respostas e devem ser ignoradas na conferência.</div>
+          </div>
+          <table class="guia-table">
+            <thead><tr><th>Situação</th><th>Por que acontece</th><th>Como explicar</th></tr></thead>
+            <tbody>
+              <tr><td><strong>48,8% no sistema e 49,00% na planilha</strong></td><td>Arredondamento.</td><td>O sistema mostra uma casa decimal; algumas abas oficiais arredondam para inteiro ou duas casas.</td></tr>
+              <tr><td><strong>Nível diferente do portal nacional</strong></td><td>O portal pode usar proficiência TRI ponderada por dificuldade.</td><td>O SAEP Analytics usa percentual de acerto direto, porque a exportação não traz TRI individual.</td></tr>
+              <tr><td><strong>Quantidade de respostas maior que itens</strong></td><td>Cada aluno responde cada item.</td><td>Registros = alunos × itens. Itens reais = identificadores únicos.</td></tr>
+              <tr><td><strong>Conhecimento aparece em várias capacidades</strong></td><td>O mesmo conhecimento pode compor itens diferentes.</td><td>Compare acertos/respostas daquele conhecimento, não apenas quantidade de itens.</td></tr>
+              <tr><td><strong>Taxa de aprovação gera dúvida</strong></td><td>O sistema considera desempenho maior ou igual a 60%.</td><td>Leia como <strong>Adequado ou superior</strong>, não como aprovação oficial do curso.</td></tr>
+              <tr><td><strong>Aba Cruzamento não bate com card de capacidade</strong></td><td>A aba cruza subfunção, padrão, capacidade e conhecimento.</td><td>Use a aba por registro para conferir os cards e use Cruzamento para leitura pedagógica detalhada.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 6. VISÃO DA TURMA -->
         <section class="guia-section" id="visao-turma">
           <h2>
             <span class="sec-icon" style="background:#dbeafe; color:#2563eb;"><i class="fa-solid fa-users"></i></span>
             Visão da Turma
           </h2>
-          <p>Tela inicial com o panorama geral coletivo da turma avaliada.</p>
+          <p>Tela inicial com o panorama geral coletivo da turma avaliada.</p>`n          <div class="alert alert-success">`n            <i class="fa-solid fa-circle-info"></i>`n            <div><strong>Importante:</strong> o KPI de aprovação indica alunos com desempenho maior ou igual a 60%, isto é, nível Adequado ou Avançado. Não substitui critérios oficiais de aprovação do curso.</div>`n          </div>
 
           <h3>KPIs do topo</h3>
           <table class="guia-table">
@@ -519,7 +591,7 @@
             <tbody>
               <tr><td><strong>Desempenho Médio</strong></td><td>Média geral da turma</td><td>Soma dos desempenhos ÷ nº de alunos</td></tr>
               <tr><td><strong>Total de Alunos</strong></td><td>Quantos foram avaliados</td><td>Contagem de nomes distintos</td></tr>
-              <tr><td><strong>Taxa de Aprovação</strong></td><td>% com desempenho ≥ 60%</td><td>Alunos ≥ 60% ÷ total × 100</td></tr>
+              <tr><td><strong>Taxa de Aprovação</strong></td><td>% de alunos em nível Adequado ou Avançado (desempenho ≥ 60%)</td><td>Alunos ≥ 60% ÷ total × 100</td></tr>
               <tr><td><strong>Tempo Médio</strong></td><td>Média de duração da prova</td><td>Média dos tempos individuais, em minutos</td></tr>
               <tr><td><strong>Melhor Desempenho</strong></td><td>Maior % individual</td><td>Max() dos desempenhos</td></tr>
               <tr><td><strong>Pior Desempenho</strong></td><td>Menor % individual</td><td>Min() dos desempenhos</td></tr>
@@ -840,3 +912,4 @@
   </script>
 </body>
 </html>
+

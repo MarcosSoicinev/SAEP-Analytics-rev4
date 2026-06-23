@@ -12,6 +12,12 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css?v=1777292953">
+  <!-- Bibliotecas externas — carregadas no head para garantir disponibilidade -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body class="saep-body">
 
@@ -67,13 +73,13 @@
         <!-- Seletor oculto (mantido para compatibilidade com o JS existente) -->
         <select id="courseSelector" class="student-select" style="display:none;"></select>
 
-        <input type="file" id="uploadConfig" accept=".xlsx" class="hidden">
+        <input type="file" id="uploadConfig" accept=".xlsx" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;">
 
         <label for="uploadPlanilha" class="upload-btn">
           <i class="fa-solid fa-file-excel text-emerald-600"></i>
           <span>Importar Planilha</span>
         </label>
-        <input type="file" id="uploadPlanilha" accept=".xlsx" class="hidden">
+        <input type="file" id="uploadPlanilha" accept=".xlsx" style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none;">
       </div>
     </div>
   </nav>
@@ -172,12 +178,6 @@
       </div>
     </section>
   </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <script src="config.js"></script>
   <script src="js/constants.js"></script>
